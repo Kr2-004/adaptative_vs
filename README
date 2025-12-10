@@ -1,0 +1,75 @@
+# Adaptive Virtual Structure Workspace (Puzzlebot Formation Control)
+
+This workspace contains the Virtual Structure (VS) controller used to generate formation trajectories with obstacle avoidance for Puzzlebot robots. The VS uses Vicon motion capture to track robots and obstacles in real time and outputs reference poses for each robot.
+
+You must have vicon ws already installed:
+
+https://github.com/dasc-lab/ros2-vicon-bridge
+
+## Vicon Setup
+
+First, source your Vicon workspace:
+
+source ~/vicon_ws/install/setup.bash   # adjust path if different
+
+Then, for **each Puzzlebot and each obstacle**, run a `vicon_bridge` instance in a separate terminal.  
+Example for `puzzlebot2`:
+
+ros2 run vicon_bridge vicon_bridge --ros-args \
+    -p host_name:="10.15.232.110:801" \
+    -p stream_mode:="ClientPull" \
+    -p publish_specific_segment:=True \
+    -p target_subject_name:="puzzlebot2" \
+    -p target_segment_name:="puzzlebot2" \
+    -p world_frame_id:="world" \
+    -p tf_namespace:="vicon"
+
+Change `target_subject_name` and `target_segment_name` for each robot/obstacle:
+- `puzzlebot1`, `puzzlebot2`, `puzzlebot3`, `puzzlebot4`, `Obstacle`, `Obstacle2`, `Obstacle3`, etc.
+- 
+
+---
+
+## Run the Virtual Structure Node
+
+After Vicon is publishing all required subjects and this workspace is sourced:
+
+
+
+Clone the workspace and build:
+
+cd ~/adaptative_vs_ws
+colcon build
+source install/setup.bash
+ros2 run vs_controller Virtual_Structure_Node
+
+VS will start and generate formation and obstacle-avoidance trajectories automatically, dmpc nodes on each puzzlebots must be launched beforehand.
+
+## Visualization
+You can open RViz at any time:
+
+rviz2
+
+### VS Visualization Node
+
+To visualize Puzzlebot poses, obstacles, and VS references in real time:
+
+ros2 run vs_controller visualization
+
+## CSV Logging Tools
+
+You can log different metrics to CSV files for offline analysis:
+
+### MPC-related data
+ros2 run vs_controller MPC_Plot
+
+### CBF activity
+ros2 run vs_controller CBFs_Plot
+
+### Tracking error
+ros2 run vs_controller Tracking_Error_Plot
+
+### Wheel velocities
+ros2 run vs_controller Wheels_Plot
+
+Each tool generates CSV files in the workspace. Those CSVs can be plotted later by running the corresponding standalone Python scripts in the repository.
