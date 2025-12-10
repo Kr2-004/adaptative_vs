@@ -1,0 +1,7 @@
+[console_scripts]
+CBFs_Plot = vs_controller.CBFs_Plot:main
+MPC_Plot = vs_controller.MPC_Plot:main
+Tracking_Error_Plot = vs_controller.Tracking_Error_Plot:main
+Virtual_Structure_Node = vs_controller.Virtual_Structure_Node:main
+Wheels_Plot = vs_controller.Wheels_Plot:main
+visualization = vs_controller.visualization:main
