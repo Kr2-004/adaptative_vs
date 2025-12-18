@@ -2,9 +2,18 @@
 import sys
 import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib as mpl
 
-pzbt_colors = ["tab:red", "tab:blue", "tab:green", "tab:orange"]
-def plot_csv(filename):
+mpl.rcParams.update({
+    "figure.subplot.left":   0.07,
+    "figure.subplot.right":  0.97,
+    "figure.subplot.bottom": 0.09,
+    "figure.subplot.top":    0.97,
+    "figure.subplot.wspace": 0.20,
+    "figure.subplot.hspace": 0.20,
+})
+pzbt_colors = ["#FF0000", "#0000FF", "#008800", "#000000"]
+def plot_csv(filename="cbf_log.csv"):
     print(f"Plotting {filename} ...")
 
     df = pd.read_csv(filename)
@@ -15,23 +24,22 @@ def plot_csv(filename):
     s3 = df["slot3"].to_numpy()
     s4 = df["slot4"].to_numpy()
 
-    plt.figure(figsize=(10,6))
-    plt.plot(t, s1, label="Slot 1", linewidth=2, color = pzbt_colors[0])
-    plt.plot(t, s2, label="Slot 2", linewidth=2, color = pzbt_colors[1])
-    plt.plot(t, s3, label="Slot 3", linewidth=2, color = pzbt_colors[2])
-    plt.plot(t, s4, label="Slot 4", linewidth=2, color = pzbt_colors[3])
+    fig, ax = plt.subplots(figsize=(10,6))
 
-    plt.axhline(0, color="black", linestyle="--", label="CBF=0")
-    plt.xlabel("Time [s]")
-    plt.ylabel("CBF h(x)")
-    plt.title("CBF Values Over Time")
-    plt.legend()
-    plt.grid(True)
+    ax.plot(t, s1, label="Slot 1", linewidth=3, color=pzbt_colors[0])
+    ax.plot(t, s2, label="Slot 2", linewidth=3, color=pzbt_colors[1])
+    ax.plot(t, s3, label="Slot 3", linewidth=3, color=pzbt_colors[2])
+    ax.plot(t, s4, label="Slot 4", linewidth=3, color=pzbt_colors[3])
+
+    ax.axhline(0, color="black", linewidth=2, linestyle="--", label="CBF=0")
+    ax.tick_params(axis='both', labelsize=14)
+    ax.set_xlabel("Time [s]", fontsize =30)
+    ax.set_ylabel("CBF h(x)", fontsize =30)
+    ax.set_xlim(0, 67.2)
+    ax.set_ylim(-0.2, 15)
+    ax.legend(loc = "upper right", fontsize = 17)
+    ax.grid(True)
     plt.show()
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python3 plot_cbf_csv.py <filename>")
-        sys.exit(1)
-
-    plot_csv(sys.argv[1])
+    plot_csv()

@@ -17,3 +17,19 @@ __pycache__/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore log and CSV output files
+*.csv
+*.log
+
+# ROS2 build artifacts (already included, but keep them)
+build/
+install/
+log/
+
+# VS Code settings
+.vscode/

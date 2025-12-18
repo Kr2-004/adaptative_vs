@@ -2,14 +2,24 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib as mpl
+
+mpl.rcParams.update({
+    "figure.subplot.left":   0.07,
+    "figure.subplot.right":  0.97,
+    "figure.subplot.bottom": 0.09,
+    "figure.subplot.top":    0.97,
+    "figure.subplot.wspace": 0.20,
+    "figure.subplot.hspace": 0.20,
+})
 
 ROBOTS = ["puzzlebot1", "puzzlebot2", "puzzlebot3", "puzzlebot4"]
 
 COLORS = {
-    "puzzlebot1": "tab:blue",
-    "puzzlebot2": "tab:orange",
-    "puzzlebot3": "tab:green",
-    "puzzlebot4": "tab:red",
+    "puzzlebot1": "#FF0000",
+    "puzzlebot2": "#0000FF",
+    "puzzlebot3": "#008800",
+    "puzzlebot4": "#000000",
 }
 
 def load_data(robot):
@@ -19,32 +29,34 @@ def load_data(robot):
 
 def plot_all_wr():
     plt.figure(figsize=(12, 5))
-    plt.title("Right Wheel Speed ωR for All Robots")
-    plt.xlabel("Time [s]")
-    plt.ylabel("ωR [rad/s]")
+    plt.xlabel("Time [s]", fontsize=30)
+    plt.ylabel("ωR [rad/s]", fontsize=30)
+    plt.xlim(0.0, 60.5)
+    plt.ylim(-1.6, 5)
 
     for r in ROBOTS:
         t, wl, wr = load_data(r)
-        plt.plot(t, wr, label=r, linewidth=2, color=COLORS[r])
+        plt.plot(t, wr, label=r, linewidth=3, color=COLORS[r])
 
     plt.grid(True)
-    plt.legend()
-    plt.tight_layout()
+    plt.legend(loc = "lower right", fontsize = 17)
+    plt.tick_params(axis="both", labelsize=14)
 
 
 def plot_all_wl():
     plt.figure(figsize=(12, 5))
-    plt.title("Left Wheel Speed ωL for All Robots")
-    plt.xlabel("Time [s]")
-    plt.ylabel("ωL [rad/s]")
+    plt.xlabel("Time [s]", fontsize=30)
+    plt.ylabel("ωL [rad/s]", fontsize=30)
+    plt.xlim(0.0, 60.5)
+    plt.ylim(-1.6, 5)
 
     for r in ROBOTS:
         t, wl, wr = load_data(r)
-        plt.plot(t, wl, label=r, linewidth=2, color=COLORS[r])
+        plt.plot(t, wl, label=r, linewidth=3, color=COLORS[r])
 
     plt.grid(True)
-    plt.legend()
-    plt.tight_layout()
+    plt.legend(loc = "lower right", fontsize = 17)
+    plt.tick_params(axis="both", labelsize=14)
 
 
 def main():

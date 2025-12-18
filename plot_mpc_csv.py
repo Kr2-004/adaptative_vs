@@ -2,38 +2,43 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib as mpl
+
+mpl.rcParams.update({
+    "figure.subplot.left":   0.07,
+    "figure.subplot.right":  0.97,
+    "figure.subplot.bottom": 0.09,
+    "figure.subplot.top":    0.97,
+    "figure.subplot.wspace": 0.20,
+    "figure.subplot.hspace": 0.20,
+})
 
 ROBOTS = ["puzzlebot1", "puzzlebot2", "puzzlebot3", "puzzlebot4"]
 
 COLORS = {
-    "puzzlebot1": "tab:blue",
-    "puzzlebot2": "tab:orange",
-    "puzzlebot3": "tab:green",
-    "puzzlebot4": "tab:red",
+    "puzzlebot1": "#FF0000",
+    "puzzlebot2": "#0000FF",
+    "puzzlebot3": "#008800",
+    "puzzlebot4": "#000000",
 }
 
+T_TOTAL = 65.0  # experiment duration [s]
+
+# Main
 def main():
 
-    # ===============================
-    # LOAD ALL CSV FILES
-    # ===============================
-    cmd_data = {}
-    for r in ROBOTS:
-        df = pd.read_csv(f"{r}_cmd.csv")
-        cmd_data[r] = df
+    # Load CSV data
+    cmd_data = {
+        r: pd.read_csv(f"{r}_cmd.csv")
+        for r in ROBOTS
+    }
 
-    # ===============================
-    # FIGURE 1 — v_cmd for all robots + v_ref
-    # ===============================
-    plt.figure(figsize=(12, 6))
-    plt.title("Linear Velocity Tracking: v_cmd for All Robots vs v_ref")
-
-    # Use the time index for x-axis
-    # (all CSVs should have same length; if not, we handle it)
     max_len = max(len(cmd_data[r]) for r in ROBOTS)
-    t = np.arange(max_len)
+    t = np.linspace(0.0, T_TOTAL, max_len)
 
-    # Plot v_cmd for each robot
+    # Figure 1: Linear velocity
+    plt.figure(figsize=(12, 6))
+
     for r in ROBOTS:
         df = cmd_data[r]
         n = len(df)
@@ -42,32 +47,30 @@ def main():
             t[:n],
             df["v_cmd"].to_numpy(),
             color=COLORS[r],
-            linewidth=2,
+            linewidth=3,
             label=f"{r} v_cmd"
         )
 
-    # Plot v_ref (use any robot’s v_ref — they are identical)
     v_ref = cmd_data[ROBOTS[0]]["v_ref"].to_numpy()
     plt.plot(
-        np.arange(len(v_ref)),
+        t[:len(v_ref)],
         v_ref,
         "--",
         color="black",
-        linewidth=2,
-        label="v_ref (reference)"
+        linewidth=3,
+        label="v_ref"
     )
 
-    plt.xlabel("Time step (0.01 s per step)")
-    plt.ylabel("Linear velocity v [m/s]")
+    plt.xlabel("Time [s]", fontsize=30)
+    plt.ylabel("Linear velocity v [m/s]", fontsize=30)
+    plt.xlim(0.0, 65.1)
+    plt.ylim(0.0, 0.220)
     plt.grid(True)
-    plt.legend()
-    plt.tight_layout()
+    plt.legend(loc="upper right",ncol = 5, fontsize=17)
+    plt.tick_params(axis="both", labelsize=14)
 
-    # ===============================
-    # FIGURE 2 — w_cmd for all robots
-    # ===============================
+    # Figure 2: Angular velocity
     plt.figure(figsize=(12, 6))
-    plt.title("Angular Velocity Commands: w_cmd for All Robots")
 
     for r in ROBOTS:
         df = cmd_data[r]
@@ -77,19 +80,19 @@ def main():
             t[:n],
             df["w_cmd"].to_numpy(),
             color=COLORS[r],
-            linewidth=2,
+            linewidth=3,
             label=f"{r} w_cmd"
         )
 
-    plt.xlabel("Time step (0.01 s per step)")
-    plt.ylabel("Angular velocity w [rad/s]")
+    plt.xlabel("Time [s]", fontsize=30)
+    plt.ylabel("Angular velocity w [rad/s]", fontsize=30)
+    plt.xlim(0.0, 65.1)
+    plt.ylim(-1.7, 1.5)
     plt.grid(True)
-    plt.legend()
-    plt.tight_layout()
+    plt.legend(loc="upper left", fontsize=17)
+    plt.tick_params(axis="both", labelsize=14)
 
-    # ===============================
-    # SHOW BOTH PLOTS
-    # ===============================
+    # Show plots
     plt.show()
 
 
